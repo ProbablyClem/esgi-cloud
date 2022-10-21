@@ -69,7 +69,22 @@ const uploadFileToBlob = async (file: File | null): Promise<string[]> => {
   // get list of blobs in container
   return getBlobsInContainer(containerClient);
 };
+
+const getBlobs = async (): Promise<string[]> => {
+  // get Container - full public read access
+  const blobService = new BlobServiceClient(
+    `https://${storageAccountName}.blob.core.windows.net/?${sasToken}`
+  );
+  const containerClient: ContainerClient = blobService.getContainerClient(containerName);
+  await containerClient.createIfNotExists({
+    access: 'container',
+  });
+
+  // get list of blobs in container
+  return getBlobsInContainer(containerClient);
+}
 // </snippet_uploadFileToBlob>
 
 export default uploadFileToBlob;
+export { getBlobs };
 

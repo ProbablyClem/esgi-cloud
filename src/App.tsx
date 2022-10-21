@@ -1,8 +1,8 @@
 // ./src/App.tsx
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Path from 'path';
-import uploadFileToBlob, { isStorageConfigured } from './azure-storage-blob';
+import uploadFileToBlob, { isStorageConfigured, getBlobs } from './azure-storage-blob';
 
 const storageConfigured = isStorageConfigured();
 
@@ -16,6 +16,12 @@ const App = (): JSX.Element => {
   // UI/form management
   const [uploading, setUploading] = useState(false);
   const [inputKey, setInputKey] = useState(Math.random().toString(36));
+
+  useEffect(() => {
+    getBlobs().then((blobs) => {
+      setBlobList(blobs);
+    });
+  }, [])
 
   const onFileChange = (event: any) => {
     // capture file into state
@@ -38,6 +44,7 @@ const App = (): JSX.Element => {
     setInputKey(Math.random().toString(36));
   };
 
+
   // display form
   const DisplayForm = () => (
     <div>
@@ -59,6 +66,8 @@ const App = (): JSX.Element => {
               <div>
                 {Path.basename(item)}
                 <br />
+                <a href={item}>Download</a>
+                <br/>
                 <img src={item} alt={item} height="200" />
               </div>
             </li>
